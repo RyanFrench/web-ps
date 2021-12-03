@@ -60,7 +60,7 @@
       (catch Exception e
         (log/info e "Unable to retrieve cmdline for PID" pid)
         "")))
-        
+
 (defn get-environment-variables
   "Get the environment variables for the process in /proc/<pid>/environ"
   [pid]
@@ -73,9 +73,9 @@
 (defn get-info
   "Given a PID, retrieve the required details from /proc"
   [pid]
-  (if-not (process-exists? pid)
-    (throw (Exception. (str "No process '" pid "' found in /proc"))))
-  {(keyword pid) (map->proc {:name (get-name pid)
-                             :ppid (get-ppid pid)
-                             :cmdline (get-cmdline pid)
-                             :environment (get-environment-variables pid)})})
+  (if (process-exists? pid)
+    {(keyword pid) (map->proc {:name (get-name pid)
+                               :ppid (get-ppid pid)
+                               :cmdline (get-cmdline pid)
+                               :environment (get-environment-variables pid)})}
+    (throw (Exception. (str "No process '" pid "' found in /proc")))))
